@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="ba3.css">
+    </head>
+    <body>
+        <figure class="highcharts-figure">
+            <button onclick="setData1()">Data 1</button>
+            <button onclick="setData2()">Data 2</button>
+            <button class="ba3-toggle-theme">Toggle Theme</button>
+            <div class="container" style="display: flex;flex-wrap: wrap">
+                <div id="barchart1"></div>
+                <div id="barchart2"></div>
+                <div id="barchart3"></div>
+                <div id="timeseries"></div>
+                <div id="piechart"></div>
+            </div>
+        </figure>
+
+
+
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+        <script src="http://lib.aga.my/chroma/2.1.0/chroma.min.js"></script>
+        <!-- <script src="http://lib.aga.my/d3/6.3.1/d3.v6.min.js"></script> -->
+        <script src="https://d3js.org/d3.v4.js"></script>
+
+        <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+        <script src="jquery-3.6.0.min.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="ba3.js"></script>
+
+        <script>
+            // var categories1 = ['muhamad', 'safrin', 'bin', 'baharudin'];
+            // var data1 = [{
+            //     name: 'Total',
+            //     data: [7,5,4,3],
+            //     colorByPoint: true
+            // }];
+            // var options1 = {
+            //     el: 'barchart1',
+            //     title: 'Set Data 1',
+            //     subtitle: 'This is sample subtitle',
+            //     categories: categories1,
+            //     data: data1
+            // }
+
+            // ba3.renderBarchart(options1);
+
+            var data = [
+                {
+                    name: 'Safrin',
+                    gender: 'Male',
+                    occupation: 'Programmer'
+                },
+                {
+                    name: 'Safrin',
+                    gender: 'Male',
+                    occupation: 'Programmer'
+                },
+                {
+                    name: 'Safrin',
+                    gender: 'Female',
+                    occupation: 'IT'
+                },
+                {
+                    name: 'Safrin',
+                    gender: 'Male',
+                    occupation: 'IT'
+                },
+                {
+                    name: 'Safrin',
+                    gender: 'Female',
+                    occupation: 'Programmer'
+                },
+                {
+                    name: 'Safrin',
+                    gender: 'Female',
+                    occupation: 'Admin'
+                },
+                {
+                    name: 'Safrin',
+                    gender: 'Female',
+                    occupation: 'Programmer'
+                },
+            ];
+
+            var gender = d3.nest()
+                .key(function(d) { return d.gender })
+                .rollup(function(v) { return v.length })
+                .entries(data)
+                .sort(function(a,b) {
+                    return d3.descending(a.value, b.value);
+                })
+            var gender_data = ba3.returnArrayFormat(gender);
+            var gender_options = {
+                el: 'barchart1',
+                title: 'Gender',
+                subtitle: 'pecahan maklumat mengikut jantina',
+                categories: gender_data.key,
+                data: [{
+                    name: 'Total',
+                    data: gender_data.value,
+                    colorByPoint: true
+                }]
+            }
+            ba3.renderBarchart(gender_options);
+
+            // =============
+
+            var occupation = d3.nest()
+                .key(function(d) { return d.occupation })
+                .rollup(function(v) { return v.length })
+                .entries(data)
+                .sort(function(a,b) {
+                    return d3.descending(a.value, b.value);
+                })
+            var occupation_data = ba3.returnArrayFormat(occupation);
+            var occupation_options = {
+                el: 'barchart2',
+                title: 'Occupation',
+                subtitle: 'pecahan maklumat mengikut occupation',
+                categories: occupation_data.key,
+                data: [{
+                    name: 'Total',
+                    data: occupation_data.value,
+                    colorByPoint: true
+                }]
+            }
+            ba3.renderBarchart(occupation_options);
+        </script>
+    </body>
+</html>
