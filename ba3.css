@@ -111,7 +111,6 @@ body {
 }
 .bar:hover {
     cursor: pointer;
-    /* background: #9fade6 !important; */
 }
 .bar-red {
     background: red;
