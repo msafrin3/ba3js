@@ -1,6 +1,7 @@
 var ba3 = {
-    color_scheme: '#43459d',
-    dark_color: '#181c29',
+    color_scheme: 'steelblue',
+    // dark_color: '#181c29',
+    dark_color: '#25282c',
     renderedCharts: [],
     theme: "light",
     returnColor: function(data) {
@@ -69,12 +70,21 @@ var ba3 = {
 
         return obj;
     },
+    random: function(char) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < char; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    },
 
     renderBarchart: function(options) {
         var that = Highcharts.chart(options.el, {
             chart: {
                 type: 'bar',
-                height: (18*options.data[0].data.length) + 70,
+                height: (18*options.data[0].data.length) + 50,
                 width: 250,
                 backgroundColor: 'transparent'
             },
@@ -86,14 +96,16 @@ var ba3 = {
                 enabled: false
             },
             title: {
-                text: '<span class="text-theme">'+options.title+'</span>',
+                // text: '<span class="text-theme">'+options.title+'</span>',
+                text: '',
                 style: {
                     fontFamily: 'arial',
                     fontSize: 14
                 }
             },
             subtitle: {
-                text: '<span class="text-theme">'+options.subtitle+'</span>',
+                // text: '<span class="text-theme">'+options.subtitle+'</span>',
+                text: '',
                 style: {
                     fontFamily: 'arial',
                     fontSize: '12px'
@@ -130,10 +142,11 @@ var ba3 = {
             },
             plotOptions: {
                 series: {
+                    pointWidth: 18,
                     cursor: 'pointer',
                     stacking: 'normal',
                     groupPadding: 0,
-                    // pointPadding: 0,
+                    pointPadding: 0.01,
                     events: {
                         click: function(e) {
                             console.log(e);
@@ -159,12 +172,32 @@ var ba3 = {
                     borderWidth: 0,
                     // borderColor: 'transparent'
                     // pointWidth: 18,
-                },
+                }
             },
             series: options.data
         });
     
         this.renderedCharts.push(that);
+    },
+    renderBarchart2: function(options) {
+        var color_scheme = this.color_scheme;
+        var obj = this.returnArrayFormat(options.data);
+        var colors = this.returnColor(obj.value);
+        var tr = '';
+        var max = options.data[0].value;
+        var uniqid = this.random(6);
+        $.each(options.data, function(index,value) {
+            var perc = value.value/max;
+            tr += '<tr>'+
+                '<td class="td-title">' + value.key + '</td>'+
+                '<td class="td-flex"><div id="bar'+uniqid+'_'+index+'" class="bar" style="background:'+color_scheme+';width:1px;opacity:'+perc+';"></div><div style="padding-left: 4px">' + value.value + '</div></td>'+
+            '</tr>'
+        });
+        $('#'+options.el).html('<table class="table-barchart">' + tr + '</table>');
+        $.each(options.data, function(index,value) {
+            var width = value.value/max*100;
+            $("#bar"+uniqid+"_"+index).css({width: width+'%'});
+        });
     },
     renderTimeseries: function() {
         Highcharts.getJSON(
