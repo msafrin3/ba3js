@@ -88,6 +88,7 @@
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script src="jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="moment.js"></script>
 <script>
     var theme = 'light';
     var color_scheme = '#43459d';
@@ -154,10 +155,20 @@
     }
 
     $(document).ready(function() {
-        var categories1 = ['muhamad', 'safrin', 'bin', 'baharudin'];
+        var categories1 = [
+            'muhamad', 
+            'safrin', 
+            // 'bin', 
+            // 'baharudin'
+    ];
         var data1 = [{
             name: 'Total',
-            data: [7,5,4,3],
+            data: [
+                7,
+                5,
+                // 4,
+                // 3
+            ],
             colorByPoint: true
         }];
         renderBarchart('barchart1', 'Dataset1', 'This is sample of dataset1', categories1, data1);
@@ -466,6 +477,14 @@
                             // formatter: function() {
                             //     console.log(this);
                             // }
+                        },
+                        events: {
+                            afterSetExtremes: function(e) {
+                                console.log(e);
+                                var min = e.min;
+                                var max = e.max;
+                                console.log(moment(min).format('YYYY-MM-DD'), moment(max).format('YYYY-MM-DD'));
+                            }
                         }
                     },
                     yAxis: {
@@ -507,7 +526,14 @@
                                     lineWidth: 1
                                 }
                             },
-                            threshold: null
+                            threshold: null,
+                            point: {
+                                events: {
+                                    drag: function(e) {
+                                        console.log(e);
+                                    }
+                                }
+                            }
                         }
                     },
 

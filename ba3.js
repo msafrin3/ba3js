@@ -1,5 +1,6 @@
 var ba3 = {
-    color_scheme: 'steelblue',
+    // color_scheme: 'steelblue',
+    color_scheme: "#1d639e",
     // dark_color: '#181c29',
     dark_color: '#25282c',
     renderedCharts: [],
@@ -25,35 +26,24 @@ var ba3 = {
         return color;
     },
     toggleTheme: function() {
-        if(this.theme == 'dark') {
-            this.theme = 'light';
-            $("body").css({background: 'white', color: 'black'});
-            // $.each(renderedCharts, function(index,value) {
-            //     value.update(barchart_light);
-            // });
-        } else if(this.theme == 'light') {
-            this.theme = 'dark';
-            $("body").css({background: this.dark_color, color: 'white'});
-            // $.each(renderedCharts, function(index,value) {
-            //     value.update(barchart_dark);
-            // });
+        var theme = this.theme;
+        if(theme == 'dark') {
+            this.setTheme('light');
+        } else {
+            this.setTheme('dark');
         }
-    
-        this.renderedCharts.forEach(function(value, index) {
-            if(value.types[0] == 'area') {
-                value.update({
-                    xAxis: {
-                        labels: {
-                            style: {
-                                color: this.returnThemeColor()
-                            }
-                        }
-                    }
-                });
-            }
-        });
-    
-        $(".text-theme").toggleClass("text-for-dark");
+    },
+    setTheme: function(theme) {
+        this.theme = theme;
+        if(theme == 'dark') {
+            $("body").css({background: this.dark_color, color: 'white'});
+            $(".text-theme").css({fill: 'white'});
+            $(".highcharts-axis-labels text").css({fill: 'white'});
+        } else if(theme == 'light') {
+            $("body").css({background: 'white', color: 'black'});
+            $(".text-theme").css({fill: 'black'});
+            $(".highcharts-axis-labels text").css({fill: 'black'});
+        }
     },
     returnArrayFormat: function(data) {
         var arr = Object.keys(data[0]);
@@ -84,7 +74,7 @@ var ba3 = {
         var that = Highcharts.chart(options.el, {
             chart: {
                 type: 'bar',
-                height: (18*options.data[0].data.length) + 50,
+                height: (18*options.data[0].data.length) + 60,
                 width: 250,
                 backgroundColor: 'transparent'
             },
@@ -96,8 +86,7 @@ var ba3 = {
                 enabled: false
             },
             title: {
-                // text: '<span class="text-theme">'+options.title+'</span>',
-                text: '',
+                text: '<span class="text-theme">'+options.title+'</span>',
                 style: {
                     fontFamily: 'arial',
                     fontSize: 14
@@ -142,11 +131,11 @@ var ba3 = {
             },
             plotOptions: {
                 series: {
-                    pointWidth: 18,
+                    // pointWidth: 18,
                     cursor: 'pointer',
                     stacking: 'normal',
                     groupPadding: 0,
-                    pointPadding: 0.01,
+                    // pointPadding: 0.01,
                     events: {
                         click: function(e) {
                             console.log(e);
@@ -200,6 +189,7 @@ var ba3 = {
         });
     },
     renderTimeseries: function() {
+        var thats = this;
         Highcharts.getJSON(
             'https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/usdeur.json',
             function (data) {
@@ -227,27 +217,16 @@ var ba3 = {
                     },
                     xAxis: {
                         type: 'datetime',
-                        labels: {
-                            style: {
-                                color: this.returnThemeColor()
-                            },
-                            // formatter: function() {
-                            //     console.log(this);
-                            // }
+                        events: {
+                            afterSetExtremes: function(e) {
+                                thats.setTheme(thats.theme);
+                            }
                         }
                     },
                     yAxis: {
                         title: {
                             text: ''
                         },
-                        labels: {
-                            style: {
-                                color: this.returnThemeColor()
-                            },
-                            formatter: function() {
-                                return '<span class="text-theme">'+this.value+'</span>'
-                            }
-                        }
                     },
                     legend: {
                         enabled: false
@@ -262,7 +241,7 @@ var ba3 = {
                                     y2: 1
                                 },
                                 stops: [
-                                    [0, this.color_scheme],
+                                    [0, thats.color_scheme],
                                     [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                                 ]
                             },
@@ -285,7 +264,7 @@ var ba3 = {
                         data: data
                     }]
                 });
-                this.renderedCharts.push(that);
+                thats.renderedCharts.push(that);
             }
         );
     },

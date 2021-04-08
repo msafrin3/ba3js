@@ -49,6 +49,11 @@
             // }
 
             // ba3.renderBarchart(options1);
+            $(document).ready(function() {
+                setTimeout(function() {
+                    ba3.setTheme('dark');
+                }, 2000);
+            });
 
             var data = [
                 {
@@ -250,6 +255,8 @@
             }
             ba3.renderBarchart(occupation_options);
             ba3.renderBarchart2(occupation_options2);
+
+            ba3.renderTimeseries();
         </script>
     </body>
 </html>
